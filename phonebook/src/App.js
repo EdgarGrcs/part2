@@ -64,14 +64,20 @@ const App = () => {
 
   const handleDelete = (id) => {
 
+    
    let personList = persons.filter(person => id !== person.id); // all which are not
    let personList2 = persons.filter(person => id === person.id); //single object
 
+   console.log(personList2[0].name)
+
+   if (window.confirm(`Delete ${personList2[0].name} ?`)){
    personBackend
     .remove(id,personList2)
     .then(response => {
       setPersons(personList);
     })
+  }
+
   }
 
   
