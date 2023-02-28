@@ -44,9 +44,25 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
 
-    if (persons.some(person => person.name === newName)){
+    if (persons.some(person => person.name.toLowerCase() === newName) && persons.some(person => person.number === newPhone)){
        return alert(`${newName} is already added to phonebook`)
-    } else {
+    } 
+
+    if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase()) && persons.some(person => person.number !== newPhone)){
+    
+      if( window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+
+        const person = persons.filter(person => newName === person.name);
+       person[0].number = newPhone;
+      
+        personBackend
+        .update(person[0].id,person[0])
+        .then(response => {
+          setPersons(persons.map(person => person.name !== newName ? person : response.data ))
+        })
+        return
+      }
+    }
       const personObject =  {
         name: newName,
         number: newPhone
@@ -57,9 +73,10 @@ const App = () => {
         .then(response => {
           setPersons(persons.concat(response.data))
         })
-    }
-    setNewName("");
-    setNewPhone("");
+    
+      setNewName("");
+      setNewPhone("");    
+
   }
 
   const handleDelete = (id) => {
