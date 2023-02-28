@@ -62,6 +62,18 @@ const App = () => {
     setNewPhone("");
   }
 
+  const handleDelete = (id) => {
+
+   let personList = persons.filter(person => id !== person.id); // all which are not
+   let personList2 = persons.filter(person => id === person.id); //single object
+
+   personBackend
+    .remove(id,personList2)
+    .then(response => {
+      setPersons(personList);
+    })
+  }
+
   
   return (
     <div>
@@ -74,7 +86,10 @@ const App = () => {
         <PersonForm name={newName} phone={newPhone} handleName={handleNameInput} handlePhone={handlePhoneInput}  />
       </form>
       <h2>Numbers</h2>
-        <Persons personList={persons}/>
+        {persons.map(person => 
+        <Persons key={person.id} name={person.name} number={person.number} handleDelete={() => handleDelete(person.id)}/>  
+          )}
+       
     </div>
   )
 }
