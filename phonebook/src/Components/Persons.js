@@ -4,7 +4,12 @@ const Persons = ({personList}) => {
 
     return(
         <div>
-            {personList.map((person) => <div key={person.name}> {person.name} {person.number} </div> )}
+            {personList.map((person) => 
+            <div key={person.id}> 
+            {person.name} 
+            {person.number} 
+            <button>delete</button>
+            </div> )}
         </div>
     )
 }
