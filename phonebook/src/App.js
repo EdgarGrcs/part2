@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import Filter from './Components/Filter'
 import PersonForm from './Components/PersonForm'
 import Persons from './Components/Persons'
-import axios from 'axios'
 import personBackend from './services/ListBackend'
+import Notification from './Components/Notification'
+import Error from './Components/Error'
 
 
 const App = () => {
@@ -11,9 +12,11 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone,setNewPhone] = useState('');
   const [searchName,setSearchName] = useState('');
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
 
-  //phonebook step 9 not finished, add delete
+ // 2.17 left to do
 
 
   useEffect(() => {
@@ -52,8 +55,8 @@ const App = () => {
     
       if( window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
 
-        const person = persons.filter(person => newName === person.name);
-       person[0].number = newPhone;
+        const person = persons.filter(person => newName.toLowerCase() === person.name.toLowerCase());
+        person[0].number = newPhone;
       
         personBackend
         .update(person[0].id,person[0])
@@ -73,7 +76,14 @@ const App = () => {
         .then(response => {
           setPersons(persons.concat(response.data))
         })
-    
+
+        setMessage(`Added ${newName}`);
+
+        setTimeout(() => {
+          setMessage(null)
+        },5000);
+
+        
       setNewName("");
       setNewPhone("");    
 
@@ -81,26 +91,39 @@ const App = () => {
 
   const handleDelete = (id) => {
 
-    
    let personList = persons.filter(person => id !== person.id); // all which are not
    let personList2 = persons.filter(person => id === person.id); //single object
 
-   console.log(personList2[0].name)
+   
 
    if (window.confirm(`Delete ${personList2[0].name} ?`)){
+
    personBackend
     .remove(id,personList2)
     .then(response => {
       setPersons(personList);
-    })
-  }
+    }).catch((error) => {
+      setErrorMessage(`Information of ${personList2[0].name} has already been removed from server`);
 
+      setTimeout(() => {
+        setErrorMessage(null)
+      },5000);
+    
+    setPersons(persons.filter(n => n.id !== id));
+    
+    })
+
+    
+
+  }
   }
 
   
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
+      <Error errorMessage={errorMessage}/>
       <div>
         <Filter value={searchName} onChange={handleSearchName}/>
       </div>
