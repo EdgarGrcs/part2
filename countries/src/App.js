@@ -1,19 +1,23 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Display from "./components/Display";
 
 function App() {
 
   const [search, setSearch] = useState("");
   const [countries, setCountries] = useState(null);
   const [countrySearch, setCountrySearch] = useState([]);
+  const [weatherData, setWeatherData] = useState("");
 
   useEffect(() => {
     axios
     .get("https://restcountries.com/v3.1/all")
     .then(response =>{
-      setCountries(response.data);
+      setCountries(response.data,);
     })
 },[])
+
+const api_key = process.env.REACT_APP_API_KEY;
 
 if(!countries){
   console.log("fetching data");
@@ -25,19 +29,19 @@ if(!countries){
   const handleSearch = (event) => {
     setSearch(event.target.value);
     setCountrySearch(countries.filter(country => country.name.common.toLowerCase().includes(search.toLowerCase())))
-    console.log(countrySearch);
   }
 
   
 
   if (countrySearch.length === 1){
+
+    
     
     const languages = countrySearch.map(country => country.languages);
-    const flag = countrySearch.map(country => country.flags);
-    console.log(flag[0].png);
-
+    const flag = countrySearch.map(country => country.flags); 
+    const city = countrySearch[0].capital[0]
+   
    let spoken = Object.values(languages[0]);
-   console.log(spoken);
    
 
     return(
@@ -56,9 +60,12 @@ if(!countries){
        <h3>languages:</h3>
         {spoken.map(lang => <li>{lang}</li>)}
         {<img src={flag[0].png} alt="flag"/>}
+        <h3>Weather in {country.capital[0]}</h3>
+        <Display city={city} weatherData={weatherData} setWeatherData={setWeatherData} />
       </div>
      )
-    })  }
+    }) }
+    
       </div>
     )
   }
@@ -77,6 +84,13 @@ if(!countries){
     
   }
 
+
+  const showCountry = (id) => {
+    setCountrySearch(countries.filter(country => country.name.common.toLowerCase().includes(id.currentTarget.id.toLowerCase())))
+
+  }
+
+
   if (countrySearch.length > 1 && countrySearch.length < 10){
     return(
     <div>
@@ -86,7 +100,7 @@ if(!countries){
       {countrySearch.map(country => {
       return(
         <div key={country.cca2}>
-          {country.name.common}
+          {country.name.common} <button id={country.name.common} onClick={showCountry}>show</button>
         </div>
       )
     })  }
@@ -95,13 +109,13 @@ if(!countries){
   }
 
 
+
+
   return (
     <div>
       <form>
       find countries <input value={search} onChange={handleSearch} />
       </form>
-    
-    
     </div>
   );
 }
@@ -109,16 +123,3 @@ if(!countries){
 export default App;
 
 
-
-
-
-/*
-
- {countrySearch.length >= 10 ? <div>Too many matches,specify another filter</div> : countrySearch.map(country => {
-      return(
-        <div key={country.cca2}>
-          {country.name.common}
-        </div>
-      )
-    })}
-*/
