@@ -19,7 +19,8 @@ console.log(weatherData, "weather test");
 
     return (
         <div>
-            
+          <div>temperature {weatherData.main.temp} Celsius</div>
+          <div>wind {weatherData.wind.speed} m/s</div>
         </div>
     )
 }

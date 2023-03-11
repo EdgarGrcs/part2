@@ -35,15 +35,12 @@ if(!countries){
 
   if (countrySearch.length === 1){
 
-    
-    
     const languages = countrySearch.map(country => country.languages);
     const flag = countrySearch.map(country => country.flags); 
     const city = countrySearch[0].capital[0]
    
    let spoken = Object.values(languages[0]);
-   
-
+  
     return(
       <div>
         <form>
@@ -70,9 +67,7 @@ if(!countries){
     )
   }
   
-
   if (countrySearch.length >= 10){
-    
     return(
     <div>
       <form>
@@ -81,15 +76,12 @@ if(!countries){
       <div>Too many matches,specify another filter</div>
     </div>
     )
-    
   }
-
 
   const showCountry = (id) => {
     setCountrySearch(countries.filter(country => country.name.common.toLowerCase().includes(id.currentTarget.id.toLowerCase())))
 
   }
-
 
   if (countrySearch.length > 1 && countrySearch.length < 10){
     return(
@@ -107,9 +99,6 @@ if(!countries){
     </div>
     )
   }
-
-
-
 
   return (
     <div>
